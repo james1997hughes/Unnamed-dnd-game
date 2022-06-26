@@ -14,7 +14,7 @@ namespace Framework {
 
         public int tileSize;
 
-        private GameObject[,] floorTileGOArr;
+        public GameObject[,] floorTileGOArr;
         private GameObject grid;
         private int numLines = 0;
         public Floor(){}
@@ -24,7 +24,7 @@ namespace Framework {
             grid.name = "Tile Master GO";
             grid.transform.parent = gameObject.transform;
 
-            floorTileGOArr = new GameObject[height, width];
+            floorTileGOArr = new GameObject[width, height];
         }
 
         void generateFloor(){
@@ -33,12 +33,12 @@ namespace Framework {
             tileHolder.name = "Grid Tile Holder";
             tileHolder.transform.parent = grid.transform;
 
-            for (int row = 0; row < height; row++){
-                for (int col = 0; col < width; col++){
+            for (int col = 0; col < width; col++){
+                for (int row = 0; row < height; row++){
                     GameObject tile = new GameObject(); // Create holder gameobject and add a FloorTile class to it.
                     FloorTile ftComp = tile.AddComponent<FloorTile>() as FloorTile;
-                    ftComp.setProps(row, col, tileSize, this); //Set properties because we can't do this during the AddComponent?
-                    tile.name = "TILE - "+row+","+col;
+                    ftComp.setProps(col, row, tileSize, this); //Set properties because we can't do this during the AddComponent?
+                    tile.name = "TILE - "+col+","+row;
                     tile.tag = "tile";
                     tile.transform.parent = tileHolder.transform; // Rename and organize
                     tile.transform.position = transform.position + ftComp.getRelativePos(); // Move tile gameobject to it's correct position as defined inside FloorTile class
@@ -47,7 +47,7 @@ namespace Framework {
 
                     MeshCollider tileMc = tile.AddComponent<MeshCollider>() as MeshCollider;
                     
-                    floorTileGOArr[row,col] = tile; // Add tile to gameobject array
+                    floorTileGOArr[col,row] = tile; // Add tile to gameobject array
                 }
             }
         }
@@ -55,14 +55,14 @@ namespace Framework {
             // +Z is UP, +X is RIGHT
             GameObject lineGrid = new GameObject();
             lineGrid.name = "GridLines Holder";
-            Color lineColor = Color.magenta;
+            Color lineColor = new Color(0.39f, 0.976f, 0.71f, 0.63f);
             Vector3 upMod = new Vector3(0,0,tileSize);
             Vector3 rightMod = new Vector3(tileSize,0,0);
 
             //Draw up line, draw right line for each cell
-            for (int row = 0; row < height; row++){
-                for (int col = 0; col < width; col++){
-                    Vector3 lineRoot = transform.position + floorTileGOArr[row,col].GetComponent<FloorTile>().getRelativePos();
+            for (int col = 0; col < width; col++){
+                for (int row = 0; row < height; row++){
+                    Vector3 lineRoot = transform.position + floorTileGOArr[col,row].GetComponent<FloorTile>().getRelativePos();
                     //draw up
                     drawLine(lineRoot, (lineRoot + upMod), lineColor, lineGrid);
                     //draw right
@@ -72,9 +72,9 @@ namespace Framework {
 
             //draw top and right big side
             // Are the getComponent calls the best way? seems heavy
-            Vector3 topLeft = floorTileGOArr[height-1,0].GetComponent<FloorTile>().getRelativePos() + transform.position + upMod;
-            Vector3 topRight = floorTileGOArr[height-1,width-1].GetComponent<FloorTile>().getRelativePos() + transform.position + upMod + rightMod;
-            Vector3 bottomRight = floorTileGOArr[0,width-1].GetComponent<FloorTile>().getRelativePos() + transform.position + rightMod;
+            Vector3 topLeft = floorTileGOArr[0,height-1].GetComponent<FloorTile>().getRelativePos() + transform.position + upMod;
+            Vector3 topRight = floorTileGOArr[width-1,height-1].GetComponent<FloorTile>().getRelativePos() + transform.position + upMod + rightMod;
+            Vector3 bottomRight = floorTileGOArr[width-1,0].GetComponent<FloorTile>().getRelativePos() + transform.position + rightMod;
             //draw top
             drawLine(topLeft, topRight, lineColor, lineGrid);
             //draw right

@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Framework{
@@ -31,21 +32,26 @@ namespace Framework{
             relativePos = new Vector3(relativex, 0, relativez);
         }
 
+        public void setColor(Color color){
+            meshRenderer.sharedMaterial.SetColor("_Color", color);
+        }
+
         void Awake() {
             hasSpace = true;
         }
 
-        void OnMouseOver(){
+        /*void OnMouseOver(){
             meshRenderer.sharedMaterial.SetColor("_Color", Color.blue);
-        }
+        }*/
 
-        void OnMouseExit(){
+        /*void OnMouseExit(){
             StartCoroutine(waitThenColor());
         }
         IEnumerator waitThenColor() {
             yield return new WaitForSeconds(0f);
             meshRenderer.sharedMaterial.SetColor("_Color", Color.red);
-        }
+        }*/
+        //new Color(0.39f, 0.976f, 0.71f, 0.63f)
 
         public void drawTile(){
             Vector3 upMod = new Vector3(0,0,tileSize); // Define handy dandy vectors
