@@ -14,4 +14,8 @@ public class InventoryItem
         mesh = imesh;
         mat = paint;
     }
+
+    public void printDebug(){
+        Debug.Log($"");
+    }
 }

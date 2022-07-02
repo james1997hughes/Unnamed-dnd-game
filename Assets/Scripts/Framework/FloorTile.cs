@@ -14,6 +14,9 @@ namespace Framework{
         private int tileSize;
         private GameObject tileGO;
 
+        Material tileMat;
+        Color tileColor;
+
         MeshRenderer meshRenderer;
 
 
@@ -22,8 +25,8 @@ namespace Framework{
         }
 
         public void setProps(int xpos, int ypos, int tileWidth, Floor parentFloor){
-            row = xpos;
-            col = ypos;
+            col = xpos;
+            row = ypos;
             parent = parentFloor;
             tileSize = tileWidth;
 
@@ -38,6 +41,7 @@ namespace Framework{
 
         void Awake() {
             hasSpace = true;
+            tileColor = Color.red;
         }
 
         /*void OnMouseOver(){
@@ -61,10 +65,15 @@ namespace Framework{
             meshRenderer = gameObject.AddComponent<MeshRenderer>(); 
             MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>(); // Add components to render ~~A~~ mesh
 
-            meshRenderer.sharedMaterial = new Material(Shader.Find("Standard")); // TODO replace shader.find with direct referencing when i learn how to do that lol
-            meshRenderer.sharedMaterial.SetColor("_Color", Color.red); // Potentially use a texture later on.
-
-
+            tileMat = new Material(Shader.Find("Standard"));
+            tileMat.SetColor("_Color", new Color(0,0,0,0.35f));
+            tileMat.SetFloat("_Mode", 3);
+            tileMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            tileMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            tileMat.EnableKeyword("_ALPHABLEND_ON");
+            tileMat.renderQueue = 3000;
+            meshRenderer.sharedMaterial = tileMat;
+            //meshRenderer.sharedMaterial.SetColor("_Color", tileColor); // Potentially use a texture later on.
             Mesh mesh = new Mesh(); // Now we create a new mesh by defining it's geometry.
 
             Vector3[] vertices = new Vector3[4]{ // Corners. In this case, it's a 2 dimensional plane, so only 4 corners.
