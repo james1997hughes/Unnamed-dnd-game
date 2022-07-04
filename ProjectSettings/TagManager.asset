@@ -6,6 +6,9 @@ TagManager:
   tags:
   - tile
   - character
+  - tile-moveable
+  - tile-blocked
+  - floor
   layers:
   - Default
   - TransparentFX

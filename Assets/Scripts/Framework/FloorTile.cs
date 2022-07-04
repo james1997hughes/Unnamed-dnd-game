@@ -8,11 +8,19 @@ namespace Framework{
 
         public int row;
         public int col;
+        public string name;
         public Vector3 relativePos;
         public bool hasSpace;
-        private Floor parent;
+        private Floor floor;
         private int tileSize;
-        private GameObject tileGO;
+        public GameObject tileGO;
+
+        public double g;
+        public double h;
+        public double f;
+        ArrayList adjacentTiles;
+        public FloorTile pathParent = null;
+
 
         Material tileMat;
         Color tileColor;
@@ -27,7 +35,8 @@ namespace Framework{
         public void setProps(int xpos, int ypos, int tileWidth, Floor parentFloor){
             col = xpos;
             row = ypos;
-            parent = parentFloor;
+            name = $"col:{col}row:{row}";
+            floor = parentFloor;
             tileSize = tileWidth;
 
             int relativex = col * tileSize;
@@ -36,12 +45,52 @@ namespace Framework{
         }
 
         public void setColor(Color color){
-            meshRenderer.sharedMaterial.SetColor("_Color", color);
+            tileMat.SetColor("_Color", color);
         }
 
         void Awake() {
             hasSpace = true;
             tileColor = Color.red;
+        }
+
+        void Start(){
+        }
+        public ArrayList getAdjacent(){
+            return adjacentTiles;
+        }
+
+        public void generateAdjacent(){
+            adjacentTiles = new ArrayList();
+            GameObject[,] floorTileGOArr = floor.getFloorTileGOArr();
+            if (col > 0){ 
+                adjacentTiles.Add(floorTileGOArr[col-1,row].GetComponent<FloorTile>()); //Left
+                if (row > 0){
+                    adjacentTiles.Add(floorTileGOArr[col-1,row-1].GetComponent<FloorTile>()); //Bottom-left
+                }
+                if (row < floor.height-1){
+                    adjacentTiles.Add(floorTileGOArr[col-1,row+1].GetComponent<FloorTile>()); //Top-left
+                }
+            }
+            if (row > 0){
+                adjacentTiles.Add(floorTileGOArr[col,row-1].GetComponent<FloorTile>()); // Bottom
+            }
+            if (row < floor.height-1){
+
+                    adjacentTiles.Add(floorTileGOArr[col,row+1].GetComponent<FloorTile>());
+                    //Debug.Log(floorTileGOArr[col,row+1].GetComponent<FloorTile>().row);
+
+            }
+
+            if (col < floor.width-1){
+                //Debug.Log($"COl: {col} floor.width: {floor.width}");
+                adjacentTiles.Add(floorTileGOArr[col+1,row].GetComponent<FloorTile>()); //Right
+                if (row > 0){   
+                    adjacentTiles.Add(floorTileGOArr[col+1,row-1].GetComponent<FloorTile>()); //Bottom-right
+                }
+                if (row < floor.height-1){
+                    adjacentTiles.Add(floorTileGOArr[col+1,row+1].GetComponent<FloorTile>());//Top-right
+                }
+            }
         }
 
         /*void OnMouseOver(){
@@ -128,6 +177,14 @@ namespace Framework{
         }
         public int getTileSize(){
             return tileSize;
+        }
+
+        public bool equals(FloorTile challenge){
+            if (this.row == challenge.row && this.col == challenge.col){
+                return true;
+            }else{
+                return false;
+            }
         }
     }
 

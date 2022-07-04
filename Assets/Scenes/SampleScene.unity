@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 57955537}
   m_Layer: 0
   m_Name: FloorManager
-  m_TagString: Untagged
+  m_TagString: floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -152,9 +152,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e4240124568bb044b738e345d6f6351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 8
-  height: 10
+  width: 16
+  height: 30
   tileSize: 1
+  isInitialized: 0
 --- !u!4 &57955538
 Transform:
   m_ObjectHideFlags: 0

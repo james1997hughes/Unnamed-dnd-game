@@ -32,6 +32,10 @@ namespace Framework {
             isInitialized  = true;
         }
 
+        public GameObject[,] getFloorTileGOArr(){
+            return floorTileGOArr;
+        }
+
         void generateFloor(){
             
             GameObject tileHolder = new GameObject();
@@ -43,6 +47,7 @@ namespace Framework {
                     GameObject tile = new GameObject(); // Create holder gameobject and add a FloorTile class to it.
                     FloorTile ftComp = tile.AddComponent<FloorTile>() as FloorTile;
                     ftComp.setProps(col, row, tileSize, this); //Set properties
+                    ftComp.setTileGO(tile); //set reference to parent GO
                     tile.name = "TILE - "+col+","+row;
                     tile.tag = "tile-moveable";
                     tile.transform.parent = tileHolder.transform; // Rename and organize
@@ -53,6 +58,14 @@ namespace Framework {
                     MeshCollider tileMc = tile.AddComponent<MeshCollider>() as MeshCollider;
                     
                     floorTileGOArr[col,row] = tile; // Add tile to gameobject array
+                }
+            }
+
+        }
+        void generateAdjacents(){
+            for (int x = 0; x < width;x++){
+                for (int y = 0; y < height; y++){
+                    floorTileGOArr[x,y].GetComponent<FloorTile>().generateAdjacent();
                 }
             }
         }
@@ -112,6 +125,7 @@ namespace Framework {
 
             foreach (int[] boundaryTile in currentLevel) {
                 floorTileGOArr[boundaryTile[0],boundaryTile[1]].tag = "tile-blocked";
+                floorTileGOArr[boundaryTile[0],boundaryTile[1]].GetComponent<FloorTile>().hasSpace = false;
                 floorTileGOArr[boundaryTile[0],boundaryTile[1]].GetComponent<MeshRenderer>().material = tileMat;
             }
         }
@@ -138,6 +152,7 @@ namespace Framework {
             drawGrid();
             drawBoundaries();
             drawMap();
+            generateAdjacents();
         }
 
         void Update(){
